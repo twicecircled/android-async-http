@@ -65,7 +65,7 @@ class AsyncHttpRequest implements Runnable {
                 if(this.isBinaryRequest) {
                     responseHandler.sendFailureMessage(e, (byte[]) null);
                 } else {
-                    responseHandler.sendFailureMessage(e, (String) null);
+                    responseHandler.sendFailureMessage(e, (String) null, null);
                 }
             }
         }
@@ -96,18 +96,18 @@ class AsyncHttpRequest implements Runnable {
                 return;
             } catch (UnknownHostException e) {
 		        if(responseHandler != null) {
-		            responseHandler.sendFailureMessage(e, "can't resolve host");
+		            responseHandler.sendFailureMessage(e, "can't resolve host", null);
 		        }
 	        	return;
             }catch (SocketException e){
                 // Added to detect host unreachable
                 if(responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "can't resolve host");
+                    responseHandler.sendFailureMessage(e, "can't resolve host", null);
                 }
                 return;
             }catch (SocketTimeoutException e){
                 if(responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "socket time out");
+                    responseHandler.sendFailureMessage(e, "socket time out", null);
                 }
                 return;
             } catch (IOException e) {

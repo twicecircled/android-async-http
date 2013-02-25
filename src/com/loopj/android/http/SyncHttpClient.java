@@ -1,5 +1,6 @@
 package com.loopj.android.http;
 
+import org.apache.http.Header;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -35,9 +36,9 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		public void onSuccess(String content) {
 			result = content;
 		}
-
+		
 		@Override
-		public void onFailure(Throwable error, String content) {
+		public void onFailure(Throwable error, String content, Header[] headers) {
 			result = onRequestFailed(error, content);
 		}
 	};

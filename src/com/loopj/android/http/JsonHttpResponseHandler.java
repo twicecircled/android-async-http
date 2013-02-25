@@ -18,6 +18,7 @@
 
 package com.loopj.android.http;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,13 +95,13 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     @Override
-    protected void sendSuccessMessage(int statusCode, String responseBody) {
+    protected void sendSuccessMessage(int statusCode, String responseBody, Header[] headers) {
     	if (statusCode != HttpStatus.SC_NO_CONTENT){
 	        try {
 	            Object jsonResponse = parseResponse(responseBody);
 	            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, jsonResponse}));
 	        } catch(JSONException e) {
-	            sendFailureMessage(e, responseBody);
+	            sendFailureMessage(e, responseBody, headers);
 	        }
     	}else{
     		sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, new JSONObject()}));
@@ -148,7 +149,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    protected void handleFailureMessage(Throwable e, String responseBody) {
+    protected void handleFailureMessage(Throwable e, String responseBody, Header[] headers) {
         try {
             if (responseBody != null) {
                 Object jsonResponse = parseResponse(responseBody);
@@ -157,13 +158,13 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 } else if(jsonResponse instanceof JSONArray) {
                     onFailure(e, (JSONArray)jsonResponse);
                 } else {
-                    onFailure(e, responseBody);
+                    onFailure(e, responseBody, headers);
                 }
             }else {
-                onFailure(e, "");
+                onFailure(e, "", headers);
             }
         }catch(JSONException ex) {
-            onFailure(e, responseBody);
+            onFailure(e, responseBody, headers);
         }
     }
 }
